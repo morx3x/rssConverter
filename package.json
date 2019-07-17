@@ -2,7 +2,7 @@
   "name": "rss-converter",
   "version": "1.0.0",
   "description": "This is a converter for rss to json.",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "files": [
     "dist"
   ],
