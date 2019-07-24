@@ -42,9 +42,31 @@ const getEscapedData: any = (data: any) => {
     )
 };
 
-export async function toJson(url: string) {
-    const res = await axios.get(url);
+export async function toJson(feedUrl: string) {
+    const res = await axios.get(feedUrl, {
+        timeout: 100000,
+        responseType: 'document',
+        headers: {
+            'User-Agent': 'rss-converter',
+            'Accept': 'application/rss+xml'
+        }
+    }).then((res) => {
+        return res;
+    }).catch((e) => {
+        console.log(e);
+        return e
+    });
     const obj: any =  await asyncParseString(res.data);
-    const channel: any = getEscapedData(obj.rss.channel);
+    let channel: any;
+    if (obj.hasOwnProperty('rss')) {
+        // RSS 2.0
+        channel = getEscapedData(obj.rss.channel);
+    } else if(obj.hasOwnProperty('RDF')) {
+        // RSS 1.0
+        channel = getEscapedData(obj.RDF.channel);
+    } else {
+        // ATOM
+        channel = getEscapedData(obj.feed);
+    }
     return JSON.stringify(channel);
 }
