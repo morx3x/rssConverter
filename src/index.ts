@@ -64,9 +64,9 @@ export async function toJson(feedUrl: string) {
         channel = getEscapedData(obj.rss.channel);
     } else if(obj.hasOwnProperty('rdf:RDF')) {
         // RSS 1.0
-        obj['rdf:RDF'].items = obj['rdf:RDF'].item;
+        obj['rdf:RDF'].channel.items = obj['rdf:RDF'].item;
         delete obj['rdf:RDF'].item;
-        channel = getEscapedData(obj['rdf:RDF']);
+        channel = getEscapedData(obj['rdf:RDF'].channel);
     } else {
         // ATOM
         obj.feed.items = obj.feed.entry;
