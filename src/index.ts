@@ -63,7 +63,7 @@ export async function toJson(feedUrl: string) {
         channel = getEscapedData(obj.rss.channel);
     } else if(obj.hasOwnProperty('RDF')) {
         // RSS 1.0
-        channel = getEscapedData(obj.RDF.channel);
+        channel = getEscapedData(obj.RDF);
     } else {
         // ATOM
         channel = getEscapedData(obj.feed);

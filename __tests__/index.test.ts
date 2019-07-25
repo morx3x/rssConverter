@@ -79,3 +79,8 @@ test('Get rss json from www.npr.org', async () => {
     const data: any = await toJson('https://www.npr.org/rss/podcast.php?id=510298');
     expect(data.hasOwnProperty('item') !== -1).toBeTruthy();
 }, 100000);
+
+test('Get rss json from prtimes.jp', async () => {
+    const data: any = await toJson('https://prtimes.jp/companyrdf.php?company_id=25503');
+    expect(data.hasOwnProperty('item') !== -1).toBeTruthy();
+}, 100000);
