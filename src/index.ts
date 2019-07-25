@@ -5,8 +5,7 @@ function asyncParseString(xml: any) {
     return new Promise(function (resolve, reject) {
         const options = {
             trim: true,
-            explicitArray: false,
-            tagNameProcessors: [xml2js.processors.stripPrefix]
+            explicitArray: false
         };
 
         xml2js.parseString(xml, options, function (err: any, obj: any) {
@@ -54,18 +53,28 @@ export async function toJson(feedUrl: string) {
         return res;
     }).catch((e) => {
         console.log(e);
-        return e
+        throw e;
     });
     const obj: any =  await asyncParseString(res.data);
     let channel: any;
     if (obj.hasOwnProperty('rss')) {
         // RSS 2.0
+        obj.rss.channel.items = obj.rss.channel.item;
+        delete obj.rss.channel.item;
         channel = getEscapedData(obj.rss.channel);
-    } else if(obj.hasOwnProperty('RDF')) {
+    } else if(obj.hasOwnProperty('rdf:RDF')) {
         // RSS 1.0
-        channel = getEscapedData(obj.RDF);
+        obj['rdf:RDF'].items = obj['rdf:RDF'].item;
+        delete obj['rdf:RDF'].item;
+        channel = getEscapedData(obj['rdf:RDF']);
     } else {
         // ATOM
+        obj.feed.items = obj.feed.entry;
+        delete obj.feed.entry;
+        obj.feed.items = obj.feed.items.map((item: any) => {
+            item.link = item.link.$.href;
+            return item;
+        });
         channel = getEscapedData(obj.feed);
     }
     return JSON.stringify(channel);

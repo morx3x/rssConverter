@@ -11,7 +11,25 @@ npm i -S rss-converter
 ```
 
 ## Usage
+Return Value
+```$json
+{
+  title,
+  ...,
+  items: [
+    {
+      ...,
+    },
+    ...
+  ]
+}
 
+> atom entry.link
+link: 'http://~'
+
+> keyname will be changed to snake case.
+'：' -> '_'
+```
 ## License
 
 [MIT](http://vjpr.mit-license.org)
