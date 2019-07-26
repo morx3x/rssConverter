@@ -11,7 +11,21 @@ npm i -S rss-converter
 ```
 
 ## Usage
-Return Value
+You can parse RSS from a URL (rssConverter.toJson).
+
+NodeJS
+Here's an example in NodeJS using Promises with async/await:
+
+```
+const rssConverter = require('rss-converter');
+
+(async () => {
+    let feed = await rssConverter.toJson('https://note.mu/recommend/rss');
+    console.log(feed.title);
+})();
+```
+
+Here's response format:
 ```$json
 {
   title,
@@ -30,6 +44,8 @@ link: 'http://~'
 > keyname will be changed to snake case.
 '：' -> '_'
 ```
+
+
 ## License
 
 [MIT](http://vjpr.mit-license.org)
