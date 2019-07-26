@@ -77,5 +77,5 @@ export async function toJson(feedUrl: string) {
         });
         channel = getEscapedData(obj.feed);
     }
-    return JSON.stringify(channel);
+    return channel;
 }
