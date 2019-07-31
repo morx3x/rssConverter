@@ -1,4 +1,4 @@
-import {toJson} from '../src/index'
+import {toJson} from '../src'
 
 test('Get rss json from note', async () => {
     const data: any = await toJson('https://note.mu/recommend/rss');
@@ -98,6 +98,12 @@ test('Get rss json from www.npr.org', async () => {
 
 test('Get rss json from prtimes.jp', async () => {
     const data: any = await toJson('https://prtimes.jp/companyrdf.php?company_id=25503');
+    expect(data.hasOwnProperty('items') !== -1).toBeTruthy();
+    expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
+}, 100000);
+
+test('Get rss json from rss.app', async () => {
+    const data: any = await toJson('https://rss.app/feeds/X7PeqO5n1HbWTv0O.xml');
     expect(data.hasOwnProperty('items') !== -1).toBeTruthy();
     expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
 }, 100000);
