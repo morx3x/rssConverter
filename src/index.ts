@@ -5,7 +5,8 @@ function asyncParseString(xml: any) {
     return new Promise(function (resolve, reject) {
         const options = {
             trim: true,
-            explicitArray: false
+            explicitArray: false,
+            attrkey: '_attrs',
         };
 
         xml2js.parseString(xml, options, function (err: any, obj: any) {
@@ -41,6 +42,28 @@ const getEscapedData: any = (data: any) => {
     )
 };
 
+const flattenAttrs: any = (item: any) => {
+    Object.keys(item).forEach((prop: any) => {
+        if (item[prop].hasOwnProperty('_attrs')) {
+            Object.keys(item[prop]['_attrs']).forEach((attr: any) => {
+                let fieldName = prop + '_' + attr;
+                item[fieldName] = item[prop]['_attrs'][attr];
+            });
+            delete item[prop]['_attrs'];
+        }
+        Object.keys(item[prop]).forEach((field: any) => {
+            if (item[prop][field].hasOwnProperty('_attrs')) {
+                Object.keys(item[prop][field]['_attrs']).forEach((attr: any) => {
+                    let fieldName = prop + '_' + attr;
+                    item[fieldName] = item[prop][field]['_attrs'][attr];
+                });
+                delete item[prop][field]['_attrs'];
+            }
+        })
+    });
+    return item;
+};
+
 export async function toJson(feedUrl: string) {
     const res = await axios.get(feedUrl, {
         timeout: 100000,
@@ -61,21 +84,34 @@ export async function toJson(feedUrl: string) {
         // RSS 2.0
         obj.rss.channel.items = obj.rss.channel.item;
         delete obj.rss.channel.item;
+        // flatten attrs
+        obj.rss.channel.items = obj.rss.channel.items.map((item: any) => {
+            return flattenAttrs(item);
+        });
+        // escape data
         channel = getEscapedData(obj.rss.channel);
     } else if(obj.hasOwnProperty('rdf:RDF')) {
         // RSS 1.0
         obj['rdf:RDF'].channel.items = obj['rdf:RDF'].item;
         delete obj['rdf:RDF'].item;
+        // flatten attrs
+        obj['rdf:RDF'].channel.items = obj['rdf:RDF'].channel.items.map((item: any) => {
+            return flattenAttrs(item);
+        });
+        // escape data
         channel = getEscapedData(obj['rdf:RDF'].channel);
     } else {
         // ATOM
         obj.feed.items = obj.feed.entry;
         delete obj.feed.entry;
+        // flatten attrs
         obj.feed.items = obj.feed.items.map((item: any) => {
-            item.link = item.link.$.href;
-            return item;
+            item.link = item.link._attrs.href;
+            return flattenAttrs(item);
         });
+        // escape data
         channel = getEscapedData(obj.feed);
+        console.log(JSON.stringify(channel))
     }
     return channel;
 }
