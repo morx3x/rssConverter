@@ -51,15 +51,6 @@ const flattenAttrs: any = (item: any) => {
             });
             delete item[prop]['_attrs'];
         }
-        Object.keys(item[prop]).forEach((field: any) => {
-            if (item[prop][field].hasOwnProperty('_attrs')) {
-                Object.keys(item[prop][field]['_attrs']).forEach((attr: any) => {
-                    let fieldName = prop + '_' + attr;
-                    item[fieldName] = item[prop][field]['_attrs'][attr];
-                });
-                delete item[prop][field]['_attrs'];
-            }
-        })
     });
     return item;
 };
