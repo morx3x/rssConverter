@@ -43,6 +43,14 @@ const getEscapedData: any = (data: any) => {
 };
 
 const flattenAttrs: any = (item: any) => {
+    if (item.hasOwnProperty('_attrs')) {
+        Object.keys(item['_attrs']).forEach((attr: any) => {
+            let fieldName =  'item_' + attr;
+            item[fieldName] = item['_attrs'][attr];
+        });
+    }
+    delete item['_attrs'];
+
     Object.keys(item).forEach((prop: any) => {
         if (item[prop].hasOwnProperty('_attrs')) {
             Object.keys(item[prop]['_attrs']).forEach((attr: any) => {
@@ -50,6 +58,14 @@ const flattenAttrs: any = (item: any) => {
                 item[fieldName] = item[prop]['_attrs'][attr];
             });
             delete item[prop]['_attrs'];
+
+            if (item[prop].hasOwnProperty('_')) {
+                item[prop] = item[prop]['_']
+            }
+
+            if (Object.keys(item[prop]).length === 0) {
+                delete item[prop];
+            }
         }
     });
     return item;
@@ -102,7 +118,6 @@ export async function toJson(feedUrl: string) {
         });
         // escape data
         channel = getEscapedData(obj.feed);
-        console.log(JSON.stringify(channel))
     }
     return channel;
 }

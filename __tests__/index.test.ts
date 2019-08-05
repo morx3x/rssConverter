@@ -107,3 +107,9 @@ test('Get rss json from rss.app', async () => {
     expect(data.hasOwnProperty('items') !== -1).toBeTruthy();
     expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
 }, 100000);
+
+test('Get rss json from rss.app', async () => {
+    const data: any = await toJson('https://www.nttdata-strategy.com/keieiken.xml');
+    expect(data.hasOwnProperty('items') !== -1).toBeTruthy();
+    expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
+}, 100000);
