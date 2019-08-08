@@ -114,9 +114,13 @@ export async function toJson(feedUrl: string) {
         obj['rdf:RDF'].channel.items = obj['rdf:RDF'].item;
         delete obj['rdf:RDF'].item;
         // flatten attrs
-        obj['rdf:RDF'].channel.items = obj['rdf:RDF'].channel.items.map((item: any) => {
-            return flattenAttrs(item);
-        });
+        if (Array.isArray(obj['rdf:RDF'].channel.items)) {
+            obj['rdf:RDF'].channel.items = obj['rdf:RDF'].channel.items.map((item: any) => {
+                return flattenAttrs(item);
+            });
+        }else{
+            obj['rdf:RDF'].channel.items = [flattenAttrs(obj['rdf:RDF'].channel.items)];
+        }
         // escape data
         channel = getEscapedData(obj['rdf:RDF'].channel);
     } else {
@@ -124,10 +128,16 @@ export async function toJson(feedUrl: string) {
         obj.feed.items = obj.feed.entry;
         delete obj.feed.entry;
         // flatten attrs
-        obj.feed.items = obj.feed.items.map((item: any) => {
-            item.link = item.link._attrs.href;
-            return flattenAttrs(item);
-        });
+        if (Array.isArray(obj.feed.items)) {
+            obj.feed.items = obj.feed.items.map((item: any) => {
+                item.link = item.link._attrs.href;
+                return flattenAttrs(item);
+            });
+        }else{
+            obj.feed.items.link = obj.feed.items.link._attrs.href;
+            obj.feed.items = [flattenAttrs(obj.feed.items)];
+        }
+
         // escape data
         channel = getEscapedData(obj.feed);
     }
