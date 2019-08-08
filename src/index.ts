@@ -42,15 +42,7 @@ const getEscapedData: any = (data: any) => {
     )
 };
 
-const flattenAttrs: any = (item: any) => {
-    if (item.hasOwnProperty('_attrs')) {
-        Object.keys(item['_attrs']).forEach((attr: any) => {
-            let fieldName =  'item_' + attr;
-            item[fieldName] = item['_attrs'][attr];
-        });
-    }
-    delete item['_attrs'];
-
+function extracted(item: any) {
     Object.keys(item).forEach((prop: any) => {
         if (item[prop].hasOwnProperty('_attrs')) {
             Object.keys(item[prop]['_attrs']).forEach((attr: any) => {
@@ -67,7 +59,22 @@ const flattenAttrs: any = (item: any) => {
                 delete item[prop];
             }
         }
+        if (item[prop] instanceof Object && !(item[prop] instanceof Array)) {
+            extracted(item[prop])
+        }
     });
+}
+
+const flattenAttrs: any = (item: any) => {
+    if (item.hasOwnProperty('_attrs')) {
+        Object.keys(item['_attrs']).forEach((attr: any) => {
+            let fieldName =  'item_' + attr;
+            item[fieldName] = item['_attrs'][attr];
+        });
+    }
+    delete item['_attrs'];
+
+    extracted(item);
     return item;
 };
 
@@ -92,9 +99,14 @@ export async function toJson(feedUrl: string) {
         obj.rss.channel.items = obj.rss.channel.item;
         delete obj.rss.channel.item;
         // flatten attrs
-        obj.rss.channel.items = obj.rss.channel.items.map((item: any) => {
-            return flattenAttrs(item);
-        });
+        if (Array.isArray(obj.rss.channel.items)) {
+            obj.rss.channel.items = obj.rss.channel.items.map((item: any) => {
+                return flattenAttrs(item);
+            });
+        }else{
+            obj.rss.channel.items = [flattenAttrs(obj.rss.channel.items)];
+        }
+
         // escape data
         channel = getEscapedData(obj.rss.channel);
     } else if(obj.hasOwnProperty('rdf:RDF')) {

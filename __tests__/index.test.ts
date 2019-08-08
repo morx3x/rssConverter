@@ -108,8 +108,20 @@ test('Get rss json from rss.app', async () => {
     expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
 }, 100000);
 
-test('Get rss json from rss.app', async () => {
+test('Get rss json from www.nttdata-strategy.com', async () => {
     const data: any = await toJson('https://www.nttdata-strategy.com/keieiken.xml');
+    expect(data.hasOwnProperty('items') !== -1).toBeTruthy();
+    expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
+}, 100000);
+
+test('Get rss json from jp.techcrunch.com', async () => {
+    const data: any = await toJson('https://jp.techcrunch.com/feed/');
+    expect(data.hasOwnProperty('items') !== -1).toBeTruthy();
+    expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
+}, 100000);
+
+test('Get rss json from note.mu only 1 item', async () => {
+    const data: any = await toJson('https://note.mu/cookpad/rss');
     expect(data.hasOwnProperty('items') !== -1).toBeTruthy();
     expect(data.hasOwnProperty('title') !== -1).toBeTruthy();
 }, 100000);
