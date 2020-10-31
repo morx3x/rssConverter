@@ -79,7 +79,7 @@ const flattenAttrs: any = (item: any) => {
 };
 
 export async function toJson(feedUrl: string) {
-    const res = await axios.get(feedUrl, {
+    const res: any = await axios.get(feedUrl, {
         timeout: 100000,
         responseType: 'document',
         headers: {
@@ -134,7 +134,7 @@ export async function toJson(feedUrl: string) {
                 return flattenAttrs(item);
             });
         }else{
-            obj.feed.items.link = obj.feed.items.link._attrs.href;
+            obj.feed.items.link = (obj.feed.items.link as any)._attrs.href;
             obj.feed.items = [flattenAttrs(obj.feed.items)];
         }
 
