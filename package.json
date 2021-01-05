@@ -53,7 +53,7 @@
   "homepage": "https://github.com/morx3x/rssConverter#readme",
   "dependencies": {
     "@types/xml2js": "^0.4.4",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "xml2js": "^0.4.19"
   },
   "publishConfig": {
